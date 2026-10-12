@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>My Applications</title><link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<nav class="navbar">
+<a class="brand" href="../index.html">Intern<span>Connect</span></a>
+<div><a href="dashboard.html">Dashboard</a><a href="internships.html">Internships</a><a href="applications.html">Applications</a><a href="profile.html">Profile</a><a href="../auth/logout.php" class="nav-btn">Logout</a></div>
+</nav>
+<main class="dashboard">
+<div class="page-heading"><span class="badge">Student</span><h1>My Applications</h1><p>Track every internship application in one place.</p></div>
+<div id="message" class="message"></div>
+<div class="table-wrap"><table><thead><tr><th>Internship</th><th>Company</th><th>Location</th><th>Applied On</th><th>Status</th></tr></thead><tbody id="rows"></tbody></table></div>
+</main>
+<script>
+async function load(){
+ const r=await fetch("../api/applications.php");
+ if(r.status===401){location.href="../login.html";return;}
+ const data=await r.json();
+ document.getElementById("rows").innerHTML=data.length?data.map(x=>`
+ <tr><td><strong>${x.title}</strong></td><td>${x.company}</td><td>${x.location}</td><td>${x.applied_at}</td><td><span class="status ${x.status.toLowerCase()}">${x.status}</span></td></tr>`).join("")
+ : `<tr><td colspan="5">No applications yet. <a href="internships.html">Browse internships</a></td></tr>`;
+}
+load();
+</script>
+</body>
+</html>

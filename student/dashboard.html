@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Student Dashboard</title><link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<nav class="navbar">
+  <a class="brand" href="../index.html">Intern<span>Connect</span></a>
+  <div><a href="dashboard.html">Dashboard</a><a href="internships.html">Internships</a><a href="applications.html">Applications</a><a href="profile.html">Profile</a><a href="../auth/logout.php" class="nav-btn">Logout</a></div>
+</nav>
+<main class="dashboard">
+  <div class="welcome"><div><span class="badge">Student Dashboard</span><h1>Hello, <span id="userName">Student</span> 👋</h1><p>Manage your internship journey from here.</p></div><a class="btn primary" href="internships.html">Find Internship</a></div>
+  <div class="stats-grid" id="stats"></div>
+  <section class="panel">
+    <h2>Quick Actions</h2>
+    <div class="quick-grid">
+      <a href="internships.html" class="quick-card"><span>🔎</span><h3>Browse Internships</h3><p>Find opportunities matching your skills.</p></a>
+      <a href="applications.html" class="quick-card"><span>📋</span><h3>My Applications</h3><p>Check your application status.</p></a>
+      <a href="profile.html" class="quick-card"><span>👤</span><h3>Complete Profile</h3><p>Keep your student information updated.</p></a>
+    </div>
+  </section>
+</main>
+<script>
+async function load(){
+ const r=await fetch("../api/student_stats.php"); if(r.status===401){location.href="../login.html";return;}
+ const d=await r.json();
+ document.getElementById("stats").innerHTML=`
+ <div class="stat"><span>Available Internships</span><strong>${d.available}</strong></div>
+ <div class="stat"><span>My Applications</span><strong>${d.applications}</strong></div>
+ <div class="stat"><span>Shortlisted</span><strong>${d.shortlisted}</strong></div>
+ <div class="stat"><span>Selected</span><strong>${d.selected}</strong></div>`;
+}
+load();
+</script>
+</body>
+</html>

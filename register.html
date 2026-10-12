@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Register - InternConnect</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="auth-page">
+
+<div class="auth-card">
+
+  <a class="brand" href="index.html">
+    Intern<span>Connect</span>
+  </a>
+
+  <h1>Create student account</h1>
+
+  <p>Start exploring internship opportunities.</p>
+
+  <div id="message" class="message"></div>
+
+  <form id="registerForm">
+
+    <label>Full Name</label>
+    <input
+      type="text"
+      id="name"
+      required
+      placeholder="Your name"
+    >
+
+    <label>Email</label>
+    <input
+      type="email"
+      id="email"
+      required
+      placeholder="you@example.com"
+    >
+
+    <label>Password</label>
+    <input
+      type="password"
+      id="password"
+      minlength="6"
+      required
+      placeholder="Minimum 6 characters"
+    >
+
+    <button class="btn primary full" type="submit">
+      Create Account
+    </button>
+
+  </form>
+
+  <p class="small">
+    Already registered?
+    <a href="login.html">Login here</a>
+  </p>
+
+</div>
+
+<script>
+
+document.getElementById("registerForm").addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    const message = document.getElementById("message");
+
+    // Get the input elements correctly
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    // Check fields
+    if (!name || !email || !password) {
+        message.textContent = "All fields are required.";
+        message.className = "message error";
+        return;
+    }
+
+    try {
+
+        const res = await fetch("auth/register.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                password: password
+            })
+        });
+
+        const data = await res.json();
+
+        message.textContent = data.message || "";
+        message.className =
+            "message " + (data.success ? "success" : "error");
+
+        if (data.success) {
+
+            setTimeout(function() {
+                location.href = "login.html";
+            }, 1200);
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+            "Something went wrong. Please check the server.";
+        message.className = "message error";
+    }
+
+});
+
+</script>
+
+</body>
+</html>

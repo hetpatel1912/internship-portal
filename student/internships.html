@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="internApp">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Internships - InternConnect</title>
+<link rel="stylesheet" href="../css/style.css">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.3/angular.min.js"></script>
+</head>
+<body ng-controller="InternshipController">
+<nav class="navbar">
+  <a class="brand" href="../index.html">Intern<span>Connect</span></a>
+  <div><a href="dashboard.html">Dashboard</a><a href="internships.html">Internships</a><a href="applications.html">Applications</a><a href="profile.html">Profile</a><a href="../auth/logout.php" class="nav-btn">Logout</a></div>
+</nav>
+<main class="dashboard">
+  <div class="page-heading"><span class="badge">AngularJS Module</span><h1>Find Internships</h1><p>Search and filter opportunities using AngularJS.</p></div>
+
+  <div class="filter-bar">
+    <input type="text" ng-model="search" ng-change="load()" placeholder="Search title, company or skill...">
+    <select ng-model="location" ng-change="load()">
+      <option value="">All Locations</option>
+      <option>Ahmedabad</option><option>Surat</option><option>Remote</option>
+    </select>
+  </div>
+
+  <div class="message" ng-class="messageType" ng-if="message">{{message}}</div>
+
+  <div class="internship-grid">
+    <article class="internship-card" ng-repeat="item in internships">
+      <div class="card-top"><span class="tag">{{item.location}}</span><span class="deadline">Deadline: {{item.deadline}}</span></div>
+      <h2>{{item.title}}</h2>
+      <h3>{{item.company}}</h3>
+      <p>{{item.description}}</p>
+      <div class="meta"><span>⏱ {{item.duration}}</span><span>💰 {{item.stipend}}</span></div>
+      <p><strong>Skills:</strong> {{item.skills_required}}</p>
+      <button class="btn primary" ng-click="apply(item.id)">Apply Now</button>
+    </article>
+  </div>
+  <p class="empty" ng-if="!internships.length">No internships found.</p>
+</main>
+<script>
+angular.module("internApp", [])
+.controller("InternshipController", function($scope, $http){
+  $scope.internships=[];
+  $scope.search="";
+  $scope.location="";
+
+  $scope.load=function(){
+    let params=[];
+    if($scope.search) params.push("search="+encodeURIComponent($scope.search));
+    if($scope.location) params.push("location="+encodeURIComponent($scope.location));
+    $http.get("../api/internships.php?"+params.join("&")).then(function(res){
+      $scope.internships=res.data;
+    });
+  };
+
+  $scope.apply=function(id){
+    $http.post("../api/applications.php",{internship_id:id}).then(function(res){
+      $scope.message=res.data.message;
+      $scope.messageType=res.data.success?"success":"error";
+    });
+  };
+
+  $scope.load();
+});
+</script>
+</body>
+</html>

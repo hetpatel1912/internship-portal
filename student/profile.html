@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>My Profile</title><link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<nav class="navbar">
+<a class="brand" href="../index.html">Intern<span>Connect</span></a>
+<div><a href="dashboard.html">Dashboard</a><a href="internships.html">Internships</a><a href="applications.html">Applications</a><a href="profile.html">Profile</a><a href="../auth/logout.php" class="nav-btn">Logout</a></div>
+</nav>
+<main class="dashboard narrow">
+<div class="page-heading"><span class="badge">Student Profile</span><h1>Complete your profile</h1><p>A complete profile helps present your skills clearly.</p></div>
+<div id="message" class="message"></div>
+<form id="profileForm" class="panel form-grid">
+<label>Full Name<input id="name" required></label>
+<label>Email<input id="email" type="email" readonly></label>
+<label>Phone<input id="phone"></label>
+<label>College<input id="college"></label>
+<label>Course<input id="course" placeholder="B.Tech Computer Engineering"></label>
+<label>Resume Link<input id="resume" placeholder="Optional URL"></label>
+<label class="full-field">Skills<textarea id="skills" placeholder="HTML, CSS, JavaScript, PHP, MySQL"></textarea></label>
+<label class="full-field">About Me<textarea id="about" rows="5" placeholder="Short introduction"></textarea></label>
+<button class="btn primary" type="submit">Save Profile</button>
+</form>
+</main>
+<script>
+async function load(){
+ const r=await fetch("../api/profile.php");
+ if(r.status===401){location.href="../login.html";return;}
+ const d=await r.json();
+ ["name","email","phone","college","course","resume","skills","about"].forEach(k=>document.getElementById(k).value=d[k]||"");
+}
+document.getElementById("profileForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const payload={name:name.value,phone:phone.value,college:college.value,course:course.value,resume:resume.value,skills:skills.value,about:about.value};
+ const r=await fetch("../api/profile.php",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+ const d=await r.json();
+ const m=document.getElementById("message");m.textContent=d.message;m.className="message "+(d.success?"success":"error");
+});
+load();
+</script>
+</body>
+</html>

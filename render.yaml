@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: student-internship-portal
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_NAME
+        value: internship_portal
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: ADMIN_EMAIL
+        value: admin@internshipportal.com
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SETUP_KEY
+        sync: false

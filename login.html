@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Login - InternConnect</title><link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+<div class="auth-card">
+  <a class="brand" href="index.html">Intern<span>Connect</span></a>
+  <h1>Welcome back</h1>
+  <p>Login to continue to your account.</p>
+  <div id="message" class="message"></div>
+  <form id="loginForm">
+    <label>Email</label><input type="email" id="email" required placeholder="you@example.com">
+    <label>Password</label><input type="password" id="password" required placeholder="Enter password">
+    <button class="btn primary full" type="submit">Login</button>
+  </form>
+  <p class="small">Don't have an account? <a href="register.html">Register here</a></p>
+  <div class="demo-box"><strong>Admin demo:</strong><br>admin@internshipportal.com / admin123</div>
+</div>
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(e){
+  e.preventDefault();
+  const message = document.getElementById("message");
+  const res = await fetch("auth/login.php", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({email:email.value,password:password.value})
+  });
+  const data = await res.json();
+  message.textContent = data.message || "";
+  message.className = "message " + (data.success ? "success" : "error");
+  if(data.success) window.location.href = data.redirect;
+});
+</script>
+</body>
+</html>
